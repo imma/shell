@@ -1,4 +1,6 @@
 {
-  "require": [],
+  "require": [
+    "boxcutter-ubuntu"
+  ],
   "versions": {}
 }
