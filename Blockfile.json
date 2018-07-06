@@ -1,6 +1,8 @@
 {
   "require": [
-    "boxcutter-ubuntu"
+    "pkgsrc",
+    "docker",
+    "docker-compose"
   ],
   "versions": {}
 }
