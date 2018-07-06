@@ -106,17 +106,15 @@ function main {
     root)
       root_bootstrap
       sudo -H -u ubuntu "$0"
+      return 0
       ;;
     ubuntu)
       user_bootstrap
       ;;
   esac
 
-  if [[ -n "${SERVICE_DONE:-}" ]]; then
-    sudo mkdir -p /var/run/sshd
-    exec sudo /usr/sbin/sshd -D -o UseDNS=no -o UsePAM=yes -o PasswordAuthentication=no
-    return 1
-  fi
+  sudo mkdir -p /var/run/sshd
+  exec sudo /usr/sbin/sshd -D -o UseDNS=no -o UsePAM=yes -o PasswordAuthentication=no
 }
 
 main "$@"
