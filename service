@@ -34,6 +34,8 @@ function root_bootstrap {
   chown -R ubuntu:ubuntu /data
 
   ln -nfs /home /Users
+
+  mkdir -p /var/run/sshd
 }
 
 function user_bootstrap {
@@ -105,7 +107,7 @@ function main {
   case "$(id -u -n)" in
     root)
       root_bootstrap
-      sudo -H -u ubuntu "$0"
+      sudo -H -u ubuntu env BUILD=1 "$0"
       return 0
       ;;
     ubuntu)
@@ -113,8 +115,9 @@ function main {
       ;;
   esac
 
-  sudo mkdir -p /var/run/sshd
-  exec sudo /usr/sbin/sshd -D -o UseDNS=no -o UsePAM=yes -o PasswordAuthentication=no
+  if [[ -z "${BUILD:-}" ]]; then
+    exec /usr/sbin/sshd -D -o UseDNS=no -o UsePAM=yes -o PasswordAuthentication=no
+  fi
 }
 
 main "$@"
