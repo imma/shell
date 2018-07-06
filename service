@@ -12,8 +12,8 @@ function root_bootstrap {
   ln -sf /bin/true /sbin/initctl
 
   apt-get update
-  apt-get install -y cloud-init sudo net-tools
-  apt-get install -y openssh-server curl lsb-release make locales python build-essential aptitude rsync jq netcat software-properties-common dnsmasq unzip perl ruby language-pack-en vim man screen runit
+  apt-get install -y cloud-init ifupdown
+  apt-get install -y openssh-server curl lsb-release make locales python build-essential aptitude rsync jq netcat software-properties-common dnsmasq unzip perl ruby language-pack-en vim man screen runit sudo net-tools
   add-apt-repository -y ppa:git-core/ppa && apt-get update && apt-get install -y git
   apt-get upgrade -y
   apt-get clean
