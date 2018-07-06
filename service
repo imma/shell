@@ -3,6 +3,11 @@
 function root_bootstrap {
   set -exfu
 
+  if [[ -d "/tmp/packages" ]]; then
+    mkdir -p /data/cache
+    mv /tmp/packages /data/cache/
+  fi
+
   dpkg-divert --local --rename --add /sbin/initctl
   ln -sf /bin/true /sbin/initctl
 
@@ -26,7 +31,7 @@ function root_bootstrap {
   groupadd -g 497 docker
   usermod -G docker ubuntu
 
-  install -d -m 0700 -o ubuntu -g ubuntu /data
+  chown -R ubuntu:ubuntu /data
 
   ln -nfs /home /Users
 }
