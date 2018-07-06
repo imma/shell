@@ -3,9 +3,9 @@
 function root_bootstrap {
   set -exfu
 
-  mkdir -p /data/cache
-  if [[ -d "/tmp/cache" ]]; then
-    (set +f; mv /tmp/cache/* /data/cache/)
+  mkdir -p /data
+  if [[ -d "/tmp/data" ]]; then
+    (set +f; mv /tmp/data/* /data/)
   fi
 
   dpkg-divert --local --rename --add /sbin/initctl
