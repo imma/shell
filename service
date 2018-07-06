@@ -1,38 +1,38 @@
 #!/usr/bin/env bash
 
-function bootstrap {
+function root_bootstrap {
   set -exfu
 
-  if [[ -z "${1:-}" ]]; then
-		dpkg-divert --local --rename --add /sbin/initctl
-		ln -sf /bin/true /sbin/initctl
+  dpkg-divert --local --rename --add /sbin/initctl
+  ln -sf /bin/true /sbin/initctl
 
-		apt-get update && apt-get install -y openssh-server curl lsb-release sudo make locales python build-essential aptitude rsync jq netcat software-properties-common net-tools dnsmasq unzip perl ruby language-pack-en vim man screen runit
-		add-apt-repository -y ppa:git-core/ppa && apt-get update && apt-get install -y git
-		apt-get update && apt-get upgrade -y
+  apt-get update && apt-get install -y openssh-server curl lsb-release sudo make locales python build-essential aptitude rsync jq netcat software-properties-common net-tools dnsmasq unzip perl ruby language-pack-en vim man screen runit
+  add-apt-repository -y ppa:git-core/ppa && apt-get update && apt-get install -y git
+  apt-get update && apt-get upgrade -y
 
-		locale-gen en_US.UTF-8
-		dpkg-reconfigure --frontend=noninteractive locales
-		update-locale LANG=en_US.UTF-8
+  locale-gen en_US.UTF-8
+  dpkg-reconfigure --frontend=noninteractive locales
+  update-locale LANG=en_US.UTF-8
 
-		curl -s -L -o /tini https://github.com/krallin/tini/releases/download/v0.18.0/tini-static-amd64
-		chmod 755 /tini
+  curl -s -L -o /tini https://github.com/krallin/tini/releases/download/v0.18.0/tini-static-amd64
+  chmod 755 /tini
 
-    if groupadd -g 1000 ubuntu; then
-      useradd -u 1000 -g ubuntu -d /home/ubuntu -m -s /bin/bash -p '*' ubuntu
-      echo "ubuntu ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-      echo "Defaults !requiretty" >> /etc/sudoers
-    fi
+  if groupadd -g 1000 ubuntu; then
+    useradd -u 1000 -g ubuntu -d /home/ubuntu -m -s /bin/bash -p '*' ubuntu
+    echo "ubuntu ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    echo "Defaults !requiretty" >> /etc/sudoers
+  fi
 
-		groupadd -g 497 docker
-		usermod -G docker ubuntu
+  groupadd -g 497 docker
+  usermod -G docker ubuntu
 
-		install -d -m 0700 -o ubuntu -g ubuntu /data
+  install -d -m 0700 -o ubuntu -g ubuntu /data
 
-		ln -nfs /home /Users
+  ln -nfs /home /Users
+}
 
-    return 0
-	fi
+function user_bootstrap {
+  set -exfu
 
   ssh -o StrictHostKeyChecking=no github.com true 2>/dev/null || true
 
@@ -59,6 +59,7 @@ function bootstrap {
 
   source .bash_profile
   block sync
+  for a in {1..5}; do git clean -ffd || true; done
   source .bash_profile
   (cd work/pkgsrc && block bootstrap)
 
@@ -80,23 +81,13 @@ function bootstrap {
   source .bash_profile
   set -x
 
-  for a in {1..5}; do git clean -ffd || true; done
-  rm -rf "$WRKOBJDIR"
-  if type -P yarn >/dev/null; then
-    yarn cache clean
-  fi
-
   install -d -m 0700 /home/ubuntu/.ssh
   if [[ -f /data/authorized_keys ]]; then
     install -m 0600 /data/authorized_keys /home/ubuntu/.ssh/authorized_keys
   else
     curl -s https://github.com/defn.keys
   fi > /home/ubuntu/.ssh/authorized_keys
-
-  if [[ -n "${1:-}" ]]; then
-    touch "$1"
-  fi
-} 
+}
 
 function main {
   set -x
@@ -106,16 +97,25 @@ function main {
     return 1
   fi
 
-  if [[ -z "${SERVICE_DONE:-}" ]]; then
-    bootstrap
-  else
-    if [[ ! -f "${SERVICE_DONE}" ]]; then
-      bootstrap "${SERVICE_DONE}"
-    else
-      bootstrap "${SERVICE_DONE}"
-      sudo mkdir -p /var/run/sshd
-      exec sudo /usr/sbin/sshd -D -o UseDNS=no -o UsePAM=yes -o PasswordAuthentication=no
-    fi
+  case "$(id -u -n)" in
+    root)
+      root_bootstrap
+      sudo -H -u ubuntu "$0"
+
+      rm -rf "$WRKOBJDIR"
+      if type -P yarn >/dev/null; then
+        yarn cache clean
+      fi
+      ;;
+    ubuntu)
+      user_bootstrap
+      ;;
+  esac
+
+  if [[ -n "${SERVICE_DONE:-}" ]]; then
+    sudo mkdir -p /var/run/sshd
+    exec sudo /usr/sbin/sshd -D -o UseDNS=no -o UsePAM=yes -o PasswordAuthentication=no
+    return 1
   fi
 }
 
