@@ -60,6 +60,7 @@ function bootstrap {
   source .bash_profile
   block sync
   source .bash_profile
+  (cd work/pkgsrc && block bootstrap)
 
   mkdir -p .ssh
   if ssh -o Include=meh 2>&1 | grep -q 'Bad'; then
