@@ -66,7 +66,8 @@ function user_bootstrap {
   block sync
   for a in {1..5}; do git clean -ffd || true; done
   source .bash_profile
-  (cd work/pkgsrc && block bootstrap)
+  find /data -ls
+  (cd work/pkgsrc && script/bootstrap)
 
   mkdir -p .ssh
   if ssh -o Include=meh 2>&1 | grep -q 'Bad'; then
