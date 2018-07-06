@@ -9,4 +9,6 @@ docker:
 	docker build --no-cache -t $(REPO):$(TAG) .
 
 virtualbox:
+	rm -rf ../boxcutter-ubuntu/box/virtualbox/*.box
 	box build $(PWD)/packer.json virtualbox
+	vagrant box add -f imma/ubuntu-18.04 ../boxcutter-ubuntu/box/virtualbox/ubuntu1804-17.0907.1.box
