@@ -18,10 +18,11 @@ function bootstrap {
 		curl -s -L -o /tini https://github.com/krallin/tini/releases/download/v0.18.0/tini-static-amd64
 		chmod 755 /tini
 
-    groupadd -g 1000 ubuntu || true
-    useradd -u 1000 -g ubuntu -d /home/ubuntu -m -s /bin/bash -p '*' ubuntu
-    echo "ubuntu ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-    echo "Defaults !requiretty" >> /etc/sudoers
+    if groupadd -g 1000 ubuntu; then
+      useradd -u 1000 -g ubuntu -d /home/ubuntu -m -s /bin/bash -p '*' ubuntu
+      echo "ubuntu ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+      echo "Defaults !requiretty" >> /etc/sudoers
+    fi
 
 		groupadd -g 497 docker
 		usermod -G docker ubuntu
