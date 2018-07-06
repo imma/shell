@@ -106,11 +106,6 @@ function main {
     root)
       root_bootstrap
       sudo -H -u ubuntu "$0"
-
-      rm -rf "$WRKOBJDIR"
-      if type -P yarn >/dev/null; then
-        yarn cache clean
-      fi
       ;;
     ubuntu)
       user_bootstrap
