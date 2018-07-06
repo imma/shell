@@ -12,5 +12,5 @@
   "ssh_username": "ubuntu",
   "update": "true",
   "headless": "true",
-  "custom_script": "../../docker/shell/service"
+  "custom_script": "../shell/service"
 }
