@@ -3,9 +3,9 @@
 function root_bootstrap {
   set -exfu
 
-  if [[ -d "/tmp/packages" ]]; then
-    mkdir -p /data/cache
-    mv /tmp/packages /data/cache/
+  mkdir -p /data/cache
+  if [[ -d "/tmp/cache" ]]; then
+    (set +f; mv /tmp/cache/* /data/cache/)
   fi
 
   dpkg-divert --local --rename --add /sbin/initctl
@@ -68,7 +68,12 @@ function user_bootstrap {
   block sync
   for a in {1..5}; do git clean -ffd || true; done
   source .bash_profile
-  (cd work/shell && block bootstrap)
+  pushd work/shell
+  if ! block bootstrap; then
+    find /tmp /data
+    return 1
+  fi
+  popd
 
   mkdir -p .ssh
   if ssh -o Include=meh 2>&1 | grep -q 'Bad'; then

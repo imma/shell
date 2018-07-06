@@ -10,7 +10,7 @@
   "preseed" : "preseed.cfg",
   "boot_command_prefix": "<esc><esc><enter><wait>",
   "ssh_username": "ubuntu",
-  "update": "true",
+  "update": "false",
   "headless": "true",
   "custom_script": "../shell/service"
 }
