@@ -11,9 +11,10 @@ function root_bootstrap {
   dpkg-divert --local --rename --add /sbin/initctl
   ln -sf /bin/true /sbin/initctl
 
-  apt-get update && apt-get install -y openssh-server curl lsb-release sudo make locales python build-essential aptitude rsync jq netcat software-properties-common net-tools dnsmasq unzip perl ruby language-pack-en vim man screen runit
+  apt-get update && apt-get install -y openssh-server curl lsb-release sudo make locales python build-essential aptitude rsync jq netcat software-properties-common net-tools dnsmasq unzip perl ruby language-pack-en vim man screen runit cloud-init
   add-apt-repository -y ppa:git-core/ppa && apt-get update && apt-get install -y git
   apt-get update && apt-get upgrade -y
+  apt-get clean
 
   locale-gen en_US.UTF-8
   dpkg-reconfigure --frontend=noninteractive locales
