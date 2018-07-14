@@ -125,7 +125,7 @@ function main {
   esac
 
   if [[ -z "${BUILD:-}" ]]; then
-    exec /usr/sbin/sshd -D -o UseDNS=no -o UsePAM=yes -o PasswordAuthentication=no
+    exec sudo /usr/sbin/sshd -D -o UseDNS=no -o UsePAM=yes -o PasswordAuthentication=no
   fi
 }
 
