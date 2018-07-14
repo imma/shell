@@ -5,7 +5,9 @@
     "pkgsrc",
     "docker",
     "docker-compose",
-    "lang"
+    "lang",
+    "runtime",
+    "op"
   ],
   "versions": {}
 }
