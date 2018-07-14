@@ -7,7 +7,7 @@ bash:
 
 docker:
 	mkdir -p data/cache
-	rsync -ia $(DATA)/cache/packages $(DATA)/cache/git data/cache/
+	rsync -ia $(DATA)/cache/{packages,install,pyenv,rbenv,git} data/cache/
 	rm -f data/cache/packages/*/All/All
 	docker build --no-cache --squash -t $(REPO):$(TAG) .
 
