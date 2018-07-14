@@ -3,11 +3,7 @@
     "site",
     "block",
     "pkgsrc",
-    "docker",
-    "docker-compose",
-    "lang",
-    "runtime",
-    "op"
+    "runtime"
   ],
   "versions": {}
 }
