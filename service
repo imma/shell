@@ -61,7 +61,9 @@ function user_bootstrap {
     git reset --hard
   fi
 
-  cp .gitconfig.template-https .gitconfig
+  if [[ ! -f .gitconfig ]]; then
+    cp .gitconfig.template-https .gitconfig
+  fi
 
   if [[ ! -f .bashrc.cache ]]; then
     script/setup
