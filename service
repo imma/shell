@@ -70,7 +70,6 @@ function user_bootstrap {
 
   source .bash_profile
   block sync
-  cp .gitconfig.template .gitconfig
   for a in {1..5}; do git clean -ffd || true; done
   source .bash_profile
   pushd work/shell
@@ -79,6 +78,8 @@ function user_bootstrap {
     return 1
   fi
   popd
+
+  cp .gitconfig.template .gitconfig
 
   mkdir -p .ssh
   if ssh -o Include=meh 2>&1 | grep -q 'Bad'; then
